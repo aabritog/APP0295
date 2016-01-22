@@ -46,6 +46,17 @@ $server->register("EjecutarSQL",
 					"Ejecuta una sentencia SQL"
 					);
 
+
+$server->register("InsPais",
+					array("pais"=>"xsd:string"),
+					array("respuesta"=>"xsd:string"),
+					$ns,
+					$ns."#InsPais",
+					"rpc",
+					"encoded",
+					"Carga un valor a la tabla dbo.Paises"
+					);
+
 function ValidarLogin($id,$pass)
 {
 	$respuesa="";
@@ -75,8 +86,24 @@ function EjecutarSQL($comando)
 		
 		//return 'prueba';
 		return $html;
+}
 
 
+function InsPais($pais)
+{
+	//$comando  = "EXEC INSPAISES '". $pais ."';";	
+	//$comando  = "EXEC INSPAISES 'Mexico';";
+	//$resultado=mssql_query($comando) or die ("ERROR CONSULTA SQL");
+
+	$sResultado = '';
+
+	$stmt = mssql_init('INSPAISES');
+	mssql_bind($stmt, '@sNombre', $pais, SQLVARCHAR, false, false, 50);
+	mssql_bind($stmt, '@sResultado', $sResultado, SQLVARCHAR,true,false,200);
+	mssql_execute($stmt);
+	mssql_free_statement($stmt);
+
+	return $sResultado;
 
 }
 
