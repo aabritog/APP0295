@@ -3,69 +3,20 @@
 //header("acces-control-allow-origin:*");
 header("Access-Control-Allow-Origin: *");
 require_once "nusoap-0.9.5/lib/nusoap.php";
-$conexion=mssql_connect('SQL5020.Smarterasp.net', 'DB_9EF6C2_mommy_admin', 'mommy2016');
-mssql_select_db('DB_9EF6C2_mommy',$conexion);
+
+include("Conexion_BD/open_conexion_sql.php");
+
 $server = new soap_server();
 $ns="urn:MommyService";
 $server ->configureWSDL("MommyService",$ns);
 $server ->schemaTargetNamespace=$ns;
-$server->register("ValidarLogin",
-					array("id" => "xsd:string","pass"=>"xsd:string"),
-					array("respuesa"=>"xsd:string"),
-					$ns,
-					$ns."#ValidarLogin",
-					"rpc",
-					"encoded",
-					"Valida el inicio de sesion de usurarios");
-
-$server->wsdl->addComplexType('StructPaises','complexType','struct','all','',
-               array(
-                        'id_pais'            => array('name' => 'id_pais', 'type' => 'xsd:int'),
-                        'nombre'            => array('name' => 'nombre', 'type' => 'xsd:string')
-                        
-                        ));
-                        
-$server->wsdl->addComplexType('ArrayOfStructPaises','complexType','array','','SOAP-ENC:Array',
-                                array(),
-                                array(        
-                                            array('ref' => 'SOAP-ENC:arrayType',
-                                                  'wsdl:arrayType' => 'tns:StructPaises[]'                              
-                                                  )                                       
-                                    ),
-                                'tns:StructPaises');    
 $server->xml_encoding = "utf-8";
 $server->soap_defencoding = "utf-8";
 
-$server->register("EjecutarSQL",
-					array("comando"=>"xsd:string"),
-					array("array_resul"=>"tns:ArrayOfStructPaises"),
-					$ns,
-					$ns."#EjecutarSQL",
-					"rpc",
-					"encoded",
-					"Ejecuta una sentencia SQL"
-					);
+include("ComplexityTypes/complexityTypes.php");
+include("Registers/wsdl_registers.php");
 
 
-$server->register("InsPais",
-					array("sPais"=>"xsd:string"),
-					array("sRespuesta"=>"xsd:string"),
-					$ns,
-					$ns."#InsPais",
-					"rpc",
-					"encoded",
-					"Carga un valor a la tabla dbo.Paises"
-					);
-
-$server->register("ReaPaises",
-					array("nIdPais"=>"xsd:int"),
-					array("sRespuesta"=>"tns:ArrayOfStructPaises"),
-					$ns,
-					$ns."#ReaPaises",
-					"rpc",
-					"encoded",
-					"Mostrar los valores de la tabla dbo.Paises"
-					);
 
 function ValidarLogin($id,$pass)
 {
