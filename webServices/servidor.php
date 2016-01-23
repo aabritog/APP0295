@@ -4,7 +4,7 @@
 header("Access-Control-Allow-Origin: *");
 require_once "nusoap-0.9.5/lib/nusoap.php";
 
-include("Conexion_BD/open_conexion_sql.php");
+include('../webServices/Conexion_BD/open_conexion_sql.php');
 
 $server = new soap_server();
 $ns="urn:MommyService";
@@ -13,8 +13,8 @@ $server ->schemaTargetNamespace=$ns;
 $server->xml_encoding = "utf-8";
 $server->soap_defencoding = "utf-8";
 
-include("ComplexityTypes/complexityTypes.php");
-include("Registers/wsdl_registers.php");
+include('../webServices/ComplexityTypes/complexityTypes.php');
+include('../webServices/Registers/wsdl_registers.php');
 
 
 
